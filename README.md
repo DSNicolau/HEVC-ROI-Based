@@ -1,12 +1,11 @@
 # HM reference software for HEVC ROI-Based
 
-This software is based on the [HM](https://vcgit.hhi.fraunhofer.de/jvet/HM/-/tree/HM-18.0?ref_type=tags) reference software for HEVC.
+This software is based on the [HM](https://vcgit.hhi.fraunhofer.de/jvet/HM/-/tree/HM-18.0?ref_type=tags) reference software for HEVC, modified to support region-of-interest (ROI) based encoding.
 
-## ROI Encoding
+The ROIs are easily defined through a 8-bit binary mask (0- background, 255-foreground). This mask can be passed to the encoder using the `InputMaskPath` or `-mi` command-line flag. The desired QP value for the foreground can be set using the `QPForeground` or `-qfg` flag, while the background QP is set using the standard `-q` parameter.
 
-This HM version has been modified to support the usage of different QP values between background and foreground regions (ROI).
 
-The ROIs are easily defined through a 8-bit binary mask (0- background, 255-foreground). This file can be passed to the HM encoder as an additional parameter using the `InputMaskPath` or `-mi` flags. Additionally, the foreground QP can be specified using the `QPForeground` or the `-qfg` flag. When this parameters are not specified, the foreground QP will be equal to the background QP, i.e. standard encoding. All CUs that intersect this mask will be encoded with the foreground QP, otherwise with the background QP `-q`. This criteria is applied at the 'TEncCu::xComputeQP' function.
+If the ROI mask or the foreground QP is not specified, the encoder defaults to standard HEVC encoding, applying a uniform QP across the entire image. During the encoding process, all Coding Units (CUs) that intersect with the ROI mask are encoded using the foreground QP, and all others are encoded using the background QP. This region-aware QP assignment is implemented in the `TEncCu::xComputeQP` function of the encoder.
 
 
 
